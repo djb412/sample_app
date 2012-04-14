@@ -16,6 +16,8 @@ class UsersController < ApplicationController
 		redirect_to @user
 		else
 			@title = "Sign up"
+			
+			@user.password_confirmation = @user.password = nil 
 			render 'new'
 		end
 	end
