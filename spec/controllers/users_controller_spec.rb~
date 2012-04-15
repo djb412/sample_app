@@ -59,7 +59,7 @@ render_views
 
 	  it "should have a password confirmation field" do
 	  get :new
-	  response.should have_selector("input[name='user[Confirmation]'][type='password']")
+	  response.should have_selector("input[name='user[password_confirmation]'][type='password']")
 	  end
 
 
