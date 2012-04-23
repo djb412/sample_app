@@ -53,6 +53,20 @@ render_views
 						:href => "/users?page=2",
 				:content => "Next")
 			end
+			it "should have delete links for admins" do        					@user.toggle!(:admin)        
+				other_user = User.all.second       
+				get :index        
+				response.should have_selector('a', 
+				:href  => user_path(other_user), 
+                                :content => "delete")      
+			end      
+			it "should not have delete links for non-admins" do 
+				other_user = User.all.second
+			        get :index        
+				response.should_not have_selector('a',
+                                :href => user_path(other_user),
+                                :content => "delete")     
+			end
 
 		end
 	end
@@ -116,6 +130,13 @@ render_views
 	  get :new
 	  response.should have_selector("input[name='user[password_confirmation]'][type='password']")
 	  end
+ 	  
+	  it "should not allow signed in users" do      
+	  user = Factory(:user)      
+	  test_sign_in(user)      
+	  get :new    
+	  response.should redirect_to(root_path) 
+	  end
 
 
 	end
@@ -141,6 +162,13 @@ render_views
 			post :create, :user => @attr
 			response.should render_template('new')
 		end	
+		it "should not allow a signed in user" do       
+			user = Factory(:user)        
+			test_sign_in(user)        
+			post :create, :user => @attr        
+			response.should redirect_to(root_path)     
+		end
+
 	   end
 
 	   describe "success" do
@@ -298,6 +326,12 @@ end
 				delete :destroy, :id => @user
 				response.should redirect_to(users_path)
 			end
+			it "should not be able to destroy itself" do  
+				lambda do         
+				#delete :destroy, :id => @admin
+			        end.should_not change(User, :count)      
+			end
+
 		end
 	end
 end
