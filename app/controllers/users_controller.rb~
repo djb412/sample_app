@@ -3,6 +3,8 @@ class UsersController < ApplicationController
 	before_filter :correct_user, :only => [:edit, :update]
 	before_filter :admin_user, :only => :destroy
 	before_filter :redirect_signed_in, :only => [:new, :create]
+	before_filter :avoid_destroy_myself, :only => :destroy
+ 
 
   def index
 	@title = "All users"
@@ -75,4 +77,15 @@ class UsersController < ApplicationController
 			flash[:success] = "You are already a user!"  
 			redirect_to(root_path) if signed_in?  
 		end
+		def avoid_destroy_myself
+		 	@user = User.find(params[:id])
+		 	redirect_to users_path, 
+			:notice => "You can not destroy yourself" unless !current_user?(@user)
+		 end
+		def show
+			@user = User.find(params[:id])
+			@microposts = @user.microposts.paginate(:page => params[:page])
+			@title = @user.name
+		end
+
 end
