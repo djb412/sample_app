@@ -106,6 +106,13 @@ render_views
 			response.should have_selector("span.content", :content => mp2.content)
 		end
 
+		it "should not show delete link if signed in user didn't create post" do
+        	signed_in_user = Factory(:user, :email => "djb412@hotmail.com") 
+		test_sign_in(signed_in_user)
+        	get :show, :id => @user 
+		response.should_not have_selector("a", :content => "delete") 
+		end
+
 
 	end
 

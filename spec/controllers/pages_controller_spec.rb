@@ -17,6 +17,43 @@ end
       	  response.should be_success
     	end
 
+	describe "no-posts" do 
+		before(:each) do 
+		@user = test_sign_in(Factory(:user)) 
+		#Factory(:micropost, :user => @user) 
+		end 
+		it"should pluralize count of zero" do # EXERCISE 11.5.2 
+		get 'home' 
+		response.should have_selector('span', :content => "0 microposts") 
+		end
+
+	end
+
+
+	describe "signed-in" do 
+
+		before(:each) do 
+		@user = test_sign_in(Factory(:user)) 
+		35.times do |n| 
+		Factory(:micropost, :user => @user, :content => "Foo bar #{ n + 1}") 
+		end 
+		end 
+
+		it"should pluralize count" do # EXERCISE 11.5.2 
+		get 'home' 
+		response.should have_selector('span', :content => "35 microposts") 
+		end 
+
+		it"should have pagination for microposts" do # EXERCISE 11.5.4 
+		get 'home' 
+		response.should have_selector("div.pagination") 
+		response.should have_selector("span.disabled", :content => "Previous") 
+		response.should have_selector("a", :href => "/?page=2", :content => "2") 
+		response.should have_selector("a", :href => "/?page=2", :content => "Next") 
+		end 
+
+	end 
+
 	# it "should have the right title" do
 	# get 'home'
 	#      response.should have_selector("title",
