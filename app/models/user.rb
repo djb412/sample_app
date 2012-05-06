@@ -44,9 +44,15 @@ validates :password, :presence => true,
 		return user if user.has_password?(submitted_password)
 	end
 
-	def self.authenticate_with_salt(id, cookie_salt)
+	def self.authenticate_with_salt(id, stored_salt)
 		user = find_by_id(id)
-		(user && user.salt == cookie_salt) ? user : nil
+		(user && user.salt == stored_salt) ? user : nil
+	end
+	def following?(followed)
+		relationships.find_by_followed_id(followed)
+	end
+	def follow!(followed)
+		relationships.create!(:followed_id => followed.id)
 	end
 
 	def feed
