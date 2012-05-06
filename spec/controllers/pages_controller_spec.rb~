@@ -22,7 +22,7 @@ end
 		@user = test_sign_in(Factory(:user)) 
 		#Factory(:micropost, :user => @user) 
 		end 
-		it"should pluralize count" do # EXERCISE 11.5.2 
+		it"should pluralize count of zero" do # EXERCISE 11.5.2 
 		get 'home' 
 		response.should have_selector('span', :content => "0 microposts") 
 		end
