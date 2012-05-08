@@ -225,6 +225,22 @@ end
 			@followed.followers.should include(@user)
 		end
 
+		describe "destruction" do
+			   before(:each) do
+				@user.follow!(@followed)
+			   end
+			   
+			   it "should destroy relationships too" do
+				@user.destroy
+				Relationship.find_by_followed_id(@followed).should be_nil
+			   end
+			   
+			   it "should destroy reverse relationships too" do
+				@user.destroy
+				Relationship.find_by_follower_id(@user).should be_nil
+			   end
+		 end
+
 	end
 
 end
